@@ -383,53 +383,20 @@ export const useUserUnitSystem = () =>
 	useUserPreferences().fitness.exercises.unitSystem;
 
 export const useApplicationEvents = () => {
-	const { version, isServerKeyValidated: isPro } = useCoreDetails();
+	// Telemetry has been removed for privacy
+	// No events are sent anymore
 
-	const sendEvent = (eventName: string, data: Record<string, unknown>) => {
-		window.umami?.track(eventName, { isPro, version, ...data });
-	};
+	const updateProgress = () => {};
+	const postReview = () => {};
+	const deployImport = () => {};
+	const createWorkout = () => {};
+	const createMeasurement = () => {};
+	const addToCollection = () => {};
+	const startOnboardingTour = () => {};
+	const completeOnboardingTour = () => {};
+	const createOrUpdateIntegration = () => {};
 
-	const updateProgress = (title: string) => {
-		sendEvent("Update Progress", { title });
-	};
-	const postReview = (title: string) => {
-		sendEvent("Post Review", { title });
-	};
-	const deployImport = (source: string) => {
-		sendEvent("Deploy Import", { source });
-	};
-	const createWorkout = () => {
-		sendEvent("Create Workout", {});
-	};
-	const createMeasurement = () => {
-		sendEvent("Create Measurement", {});
-	};
-	const addToCollection = (entityLot: EntityLot) => {
-		sendEvent("Add To Collection", { entityLot });
-	};
-	const startOnboardingTour = () => {
-		sendEvent("Start Onboarding Tour", {});
-	};
-	const completeOnboardingTour = () => {
-		sendEvent("Complete Onboarding Tour", {});
-	};
-	const createOrUpdateIntegration = (provider: string, isUpdate: boolean) => {
-		sendEvent(isUpdate ? "Update Integration" : "Create Integration", {
-			provider,
-		});
-	};
-
-	return {
-		postReview,
-		deployImport,
-		createWorkout,
-		updateProgress,
-		addToCollection,
-		createMeasurement,
-		startOnboardingTour,
-		completeOnboardingTour,
-		createOrUpdateIntegration,
-	};
+	return { updateProgress, postReview, deployImport, createWorkout, createMeasurement, addToCollection, startOnboardingTour, completeOnboardingTour, createOrUpdateIntegration };
 };
 
 export const useForceUpdateEverySecond = () => {

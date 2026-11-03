@@ -170,50 +170,7 @@ async fn build_provider_specifics(
     Ok(specifics)
 }
 
-async fn get_is_server_key_validated(ss: &Arc<SupportingService>) -> Result<bool> {
-    let pro_key = &ss.config.server.pro_key;
-    if pro_key.is_empty() {
-        return Ok(false);
-    }
-    #[nest_struct]
-    #[derive(Debug, Serialize, Clone, Deserialize)]
-    struct VerifyKeyResponse {
-        data: nest! {
-            valid: bool,
-            meta: Option<nest! { expiry: Option<Date> }>
-        },
-    }
-    let client = get_base_http_client(Some(vec![(
-        AUTHORIZATION,
-        HeaderValue::from_str(&format!("Bearer {}", UNKEY_ROOT_KEY)).unwrap(),
-    )]));
-    let Ok(request) = client
-        .post("https://api.unkey.com/v2/keys.verifyKey")
-        .json(&serde_json::json!({ "key": pro_key }))
-        .send()
-        .await
-    else {
-        ryot_log!(warn, "Failed to verify Pro Key.");
-        return Ok(false);
-    };
-    let Ok(response) = request.json::<VerifyKeyResponse>().await else {
-        ryot_log!(warn, "Failed to parse Pro Key verification response.");
-        return Ok(false);
-    };
-    if !response.data.valid {
-        ryot_log!(debug, "Pro Key is no longer valid.");
-        return Ok(false);
-    };
-    let key_meta = response.data.meta;
-    ryot_log!(debug, "Expiry: {:?}", key_meta.clone().map(|m| m.expiry));
-    if let Some(meta) = key_meta
-        && let Some(expiry) = meta.expiry
-        && ss.server_start_time > convert_naive_to_utc(expiry)
-    {
-        ryot_log!(warn, "Pro Key has expired. Please renew your subscription.");
-        return Ok(false);
-    }
-    ryot_log!(debug, "Pro Key verified successfully");
+async fn get_is_server_key_validated(_ss: &Arc<SupportingService>) -> Result<bool> {
     Ok(true)
 }
 

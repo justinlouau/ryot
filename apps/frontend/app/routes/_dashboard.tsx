@@ -98,11 +98,8 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 	const isAccessLinkSession = Boolean(userDetails.accessLinkId);
 	const isDemoInstance = coreDetails.isDemoInstance;
 
-	const shouldHaveUmami =
-		coreDetails.frontend.umami.scriptUrl &&
-		coreDetails.frontend.umami.websiteId &&
-		!coreDetails.disableTelemetry &&
-		!isDemoInstance;
+	// Telemetry removed for privacy
+	const shouldHaveUmami = false;
 
 	return {
 		userDetails,
