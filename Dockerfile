@@ -12,8 +12,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy all repository source files (including apps/backend, crates/, libs/, etc.)
 COPY . .
+
+# Set the required compile-time environment variables
+ENV APP_VERSION=custom-local
+ENV UNKEY_ROOT_KEY=dummy-root-key
 
 # Build the release binary
 RUN cargo build --release --bin backend
