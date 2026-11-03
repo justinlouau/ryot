@@ -14,6 +14,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY . .
 
+# Satisfy Askama compile-time email template requirement
+RUN mkdir -p crates/services/notification/templates && \
+    touch crates/services/notification/templates/generic.html
+
 # Set the required compile-time environment variables
 ENV APP_VERSION=custom-local
 ENV UNKEY_ROOT_KEY=dummy-root-key
