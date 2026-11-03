@@ -6,16 +6,14 @@ ARG NODE_BASE_IMAGE=node:24.22.1-bookworm-slim
 FROM rust:bookworm AS backend-builder
 WORKDIR /app
 
-# Install build dependencies (OpenSSL, pkg-config, etc.)
+# Install build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     pkg-config \
     libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the workspace files needed to compile the Rust binary
-COPY Cargo.toml Cargo.lock rust-toolchain.toml* ./
-COPY crates/ ./crates/
-COPY libs/ ./libs/
+# Copy all repository source files (including apps/backend, crates/, libs/, etc.)
+COPY . .
 
 # Build the release binary
 RUN cargo build --release --bin backend
